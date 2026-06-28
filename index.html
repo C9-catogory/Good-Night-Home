@@ -1,92 +1,254 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Good Night Home V8｜Dream Home RPG</title>
-<link rel="stylesheet" href="./style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Drawescape 绘梦境 V5｜World Folding WebGL Game</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-<div id="shell">
-  <header class="topbar">
-    <div class="brand">
-      <span class="logo">🌙</span>
-      <div>
-        <h1>Good Night Home V8</h1>
-        <p>Dream Home RPG · 内心角落 / 物品地址 / 情绪整合</p>
-      </div>
+  <a class="skip" href="#webglLab">跳到 WebGL 实验室</a>
+  <div class="aurora"></div>
+  <header class="hero" id="entry">
+    <div class="heroHud">
+      <span>✦ DRAWESCAPE V5</span>
+      <span>WebGL World Folding Engine</span>
+      <span id="saveStatus">local save ready</span>
     </div>
-    <div class="actions">
-      <button id="btn-dream">梦境灯光</button>
-      <button id="btn-map">24章心路</button>
-      <button id="btn-card">晚安卡</button>
-      <button id="btn-reset">重置</button>
+    <div class="heroGrid">
+      <section class="heroText">
+        <p class="eyebrow">Starcove Drawing Lab presents</p>
+        <h1>Drawescape<br><span>把世界折叠成画</span></h1>
+        <p class="lead">一个真实 WebGL + Canvas 的绘画推理小游戏：从坐标、透视、光影、褶皱、人脸、自然、风格化，到把感受翻译成线条、颜色、比例和明暗。</p>
+        <div class="heroActions">
+          <button class="primary" data-jump="webglLab">启动 3D 世界模型</button>
+          <button data-jump="perspectiveLab">进入透视学院</button>
+          <button data-jump="faceLab">画人脸与风格化</button>
+          <button data-jump="emotionLab">把感受翻译成画</button>
+        </div>
+        <div class="loopStrip" aria-label="game loop">
+          <b>Observe</b><span>→</span><b>Scan</b><span>→</span><b>Infer</b><span>→</span><b>Fold</b><span>→</span><b>Draw</b><span>→</span><b>Calibrate</b>
+        </div>
+      </section>
+      <section class="coverCard" aria-label="drawescape cover visual">
+        <canvas id="coverCanvas" width="820" height="620"></canvas>
+        <div class="coverOverlay">
+          <b>World Folding</b>
+          <small>geometry / light / cloth / feeling / style</small>
+        </div>
+      </section>
     </div>
   </header>
 
-  <main class="layout">
-    <aside class="side left" id="left-panel">
-      <button class="collapse" data-target="left-panel">☰</button>
-      <h2>今晚的心路</h2>
-      <div class="chapter-badge" id="chapter-badge">Chapter 1｜开灯</div>
-      <div id="quest-list"></div>
-      <div class="meter"><div id="quest-meter"></div></div>
+  <nav class="topbar" aria-label="main navigation">
+    <button data-jump="entry">🎮 入口</button>
+    <button data-jump="map">🗺️ 绘境地图</button>
+    <button data-jump="webglLab">🧊 WebGL 3D</button>
+    <button data-jump="perspectiveLab">📐 透视</button>
+    <button data-jump="shadingLab">🌗 光影褶皱</button>
+    <button data-jump="faceLab">🙂 人脸风格</button>
+    <button data-jump="natureLab">🌊 自然流体</button>
+    <button data-jump="paletteLab">🎨 调色</button>
+    <button data-jump="emotionLab">🫧 感受翻译</button>
+    <button data-jump="knowledge">📚 原理</button>
+    <button id="themeBtn">🌙 睡前</button>
+    <button id="focusBtn">🟨 聚焦</button>
+  </nav>
 
-      <h2>心路不是工作表</h2>
-      <p class="soft-text">
-        它是一座可以做白日梦的家。你可以无所事事，也可以慢慢把东西、感受和内在声音放到能休息的位置。
-      </p>
-    </aside>
-
-    <section class="game-wrap">
-      <div id="game-container"></div>
-      <div class="bottom-dialogue">
-        <div class="portrait">🐱</div>
+  <main>
+    <section class="panel introPanel" id="map">
+      <div class="sectionHead">
         <div>
-          <b>小理</b>
-          <p id="dialogue">灯已经开了。今晚先不用变好，只要走进这座小家。</p>
+          <p class="eyebrow">Map of Drawescape</p>
+          <h2>绘境地图：信息如何变成画</h2>
+          <p>绘画不是单个技巧，而是一个信息整合流程。每个星区都给你一种“看见世界”的工具。</p>
+        </div>
+        <button id="resetProgress">重置进度</button>
+      </div>
+      <div class="worldMap" id="worldMap"></div>
+    </section>
+
+    <section class="panel" id="webglLab">
+      <div class="sectionHead">
+        <div>
+          <p class="eyebrow">Real WebGL Lab</p>
+          <h2>3D 世界模型实验室：从模型到画面</h2>
+          <p>拖动 3D 世界，改变相机、光、风格比例。保存视角截图，像把 Blender/Rhino/SU 的结构折叠成 Procreate/PS 的画面。</p>
+        </div>
+        <div class="actions">
+          <button id="saveViewBtn">💾 保存视角</button>
+          <button id="shot3DBtn">📸 截图</button>
+          <button id="exportSceneBtn">⬇️ 导出场景 JSON</button>
         </div>
       </div>
-      <div class="mobile-controls">
-        <div class="pad">
-          <button data-key="up">▲</button>
-          <button data-key="left">◀</button>
-          <button data-key="down">▼</button>
-          <button data-key="right">▶</button>
+      <div class="labGrid big">
+        <div class="viewportWrap">
+          <div class="viewportHeader">
+            <span id="webglStatus">WebGL loading…</span>
+            <select id="savedViewsSelect" title="saved views"><option value="">读取保存视角</option></select>
+          </div>
+          <div id="threeMount" class="threeMount">
+            <canvas id="fallback3D" width="960" height="620"></canvas>
+            <canvas id="projectionOverlay" width="960" height="620"></canvas>
+          </div>
+          <div class="hudHelp">鼠标/触控：拖动旋转相机 · 点击选择物体 · Shift+拖动选中物体平移 · 滚轮缩放</div>
         </div>
-        <button class="interact" data-key="interact">互动 E</button>
+        <aside class="controlStack">
+          <details open><summary>添加场景 / 形体</summary>
+            <div class="chipGrid">
+              <button data-add="box">盒体</button><button data-add="sphere">球</button><button data-add="cylinder">圆柱</button><button data-add="cone">圆锥</button><button data-add="torus">环</button><button data-add="ribbon">飘带</button><button data-add="room">房间</button><button data-add="head">人头几何</button><button data-add="tree">树/自然</button><button data-add="cloth">褶皱布片</button>
+            </div>
+          </details>
+          <details open><summary>相机 / 透视</summary>
+            <label>FOV 透视强度 <input id="fovRange" type="range" min="22" max="92" value="50"><span id="fovVal">50°</span></label>
+            <label>相机高度 <input id="camHeight" type="range" min="-2" max="5" step="0.1" value="1.4"><span id="camHeightVal">1.4</span></label>
+            <label>视平线提示 <input id="showHorizon" type="checkbox" checked></label>
+            <label>投影辅助线 <input id="showProjection" type="checkbox" checked></label>
+          </details>
+          <details open><summary>光影 / 材质</summary>
+            <label>光源方位 <input id="lightAz" type="range" min="0" max="360" value="35"><span id="lightAzVal">35°</span></label>
+            <label>光源高度 <input id="lightEl" type="range" min="5" max="85" value="42"><span id="lightElVal">42°</span></label>
+            <label>粗糙度 <input id="roughness" type="range" min="0" max="1" step="0.01" value="0.56"><span id="roughVal">0.56</span></label>
+            <label>金属度 <input id="metalness" type="range" min="0" max="1" step="0.01" value="0.08"><span id="metalVal">0.08</span></label>
+            <label>线框模式 <input id="wireToggle" type="checkbox"></label>
+          </details>
+          <details open><summary>风格压缩 / 人物比例</summary>
+            <label>动漫化 <input id="animeRange" type="range" min="0" max="1" step="0.01" value="0.25"><span id="animeVal">0.25</span></label>
+            <label>Q版比例 <input id="chibiRange" type="range" min="0" max="1" step="0.01" value="0.18"><span id="chibiVal">0.18</span></label>
+            <label>线条粗细 <input id="lineWeight3D" type="range" min="1" max="8" value="3"><span id="lineWeight3DVal">3</span></label>
+          </details>
+          <div class="principleCard" id="selectedInfo">
+            <b>选中物体</b><p>点击物体后，这里会说明它如何从三维结构折叠成二维绘画线索。</p>
+          </div>
+        </aside>
       </div>
     </section>
 
-    <aside class="side right" id="right-panel">
-      <button class="collapse" data-target="right-panel">☰</button>
-      <h2>当前携带</h2>
-      <div class="inventory" id="inventory">空</div>
-
-      <h2>当前学习</h2>
-      <div class="skill-card" id="skill-card">
-        <b>空间锚点</b>
-        <span>先看见一个灯、一扇门、一个可以坐下来的角落。记忆从锚点开始。</span>
+    <section class="panel" id="perspectiveLab">
+      <div class="sectionHead">
+        <div><p class="eyebrow">European Perspective Academy</p><h2>透视学院：观看世界的几何方法</h2><p>拖动消失点、视平线和相机参数，把欧洲美术课反复讲的透视规则变成可操作系统。</p></div>
+        <div class="actions"><button id="shotPerspectiveBtn">📸 保存透视截图</button><button id="clearPerspectiveDraw">清空笔迹</button></div>
       </div>
-
-      <h2>内在角落</h2>
-      <div class="inner-card" id="inner-card">
-        <b>尚未遇见</b>
-        <span>继续走动，靠近发光的角落。那里可能有一个小小的部分在等你。</span>
+      <div class="labGrid">
+        <div class="canvasTool">
+          <canvas id="perspectiveCanvas" width="980" height="650"></canvas>
+        </div>
+        <aside class="controlStack">
+          <h3>透视模式</h3>
+          <div class="segmented" id="perspectiveModes"><button data-mode="one" class="active">一点</button><button data-mode="two">两点</button><button data-mode="three">三点</button><button data-mode="ortho">正交/轴测</button></div>
+          <label>网格密度 <input id="gridDensity" type="range" min="4" max="24" value="11"></label>
+          <label>辅助线透明度 <input id="guideAlpha" type="range" min="0.15" max="1" step="0.05" value="0.55"></label>
+          <label>画笔颜色 <input id="drawColor" type="color" value="#24313f"></label>
+          <label>画笔粗细 <input id="brushSize" type="range" min="1" max="16" value="4"></label>
+          <div class="principleCard" id="perspectiveExplain"></div>
+        </aside>
       </div>
-    </aside>
+    </section>
+
+    <section class="panel" id="shadingLab">
+      <div class="sectionHead">
+        <div><p class="eyebrow">Light / Terminator / Folds</p><h2>光影与褶皱：把理论串成可画的步骤</h2><p>明暗交界线不是一条“阴影边”，而是表面法线与光线关系变化的轨迹。褶皱也不是随机线，是固定点、重力、拉力和材质共同产生的结构。</p></div>
+        <button id="shotShadingBtn">📸 保存练习图</button>
+      </div>
+      <div class="labGrid">
+        <div class="dualCanvas">
+          <canvas id="shadingCanvas" width="640" height="520"></canvas>
+          <canvas id="foldCanvas" width="640" height="520"></canvas>
+        </div>
+        <aside class="controlStack">
+          <label>光源方向 <input id="shadeAngle" type="range" min="0" max="360" value="225"><span id="shadeAngleVal">225°</span></label>
+          <label>光源高度 <input id="shadeHeight" type="range" min="5" max="80" value="35"><span id="shadeHeightVal">35°</span></label>
+          <label>形体复杂度 <input id="formComplexity" type="range" min="0" max="1" step="0.01" value="0.35"></label>
+          <label>褶皱张力 <input id="foldTension" type="range" min="0" max="1" step="0.01" value="0.55"></label>
+          <label>材质硬度 <input id="clothStiffness" type="range" min="0" max="1" step="0.01" value="0.42"></label>
+          <div class="principleCard"><b>明暗交界线口诀</b><p>先找体块 → 找光源 → 判断每个面的朝向 → 画朝光/背光过渡 → 再加投影与 AO。不要先涂黑，先问“这个面朝哪里”。</p></div>
+          <div class="principleCard"><b>褶皱口诀</b><p>先找固定点 → 找拉力方向 → 判断材料软硬 → 主褶皱长而清楚，次褶皱短而碎。布不是线条，是受力后的曲面。</p></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="panel" id="faceLab">
+      <div class="sectionHead">
+        <div><p class="eyebrow">Human Geometry / Anime / Chibi</p><h2>人脸与风格化：人也是几何，只是关系更复杂</h2><p>用坐标点、轴线、体块和比例参数来画人脸。再把三维信息压缩成动漫/Q版/漫画语言。</p></div>
+        <button id="shotFaceBtn">📸 保存人脸结构图</button>
+      </div>
+      <div class="labGrid">
+        <canvas id="faceCanvas" width="980" height="650"></canvas>
+        <aside class="controlStack">
+          <label>转头角度 <input id="faceYaw" type="range" min="-55" max="55" value="0"><span id="faceYawVal">0°</span></label>
+          <label>俯仰 <input id="facePitch" type="range" min="-35" max="35" value="0"><span id="facePitchVal">0°</span></label>
+          <label>动漫化 <input id="faceAnime" type="range" min="0" max="1" step="0.01" value="0.38"></label>
+          <label>Q版化 <input id="faceChibi" type="range" min="0" max="1" step="0.01" value="0.15"></label>
+          <label>光影强度 <input id="faceShade" type="range" min="0" max="1" step="0.01" value="0.48"></label>
+          <label>显示辅助线 <input id="faceGuides" type="checkbox" checked></label>
+          <div class="principleCard"><b>人脸校准顺序</b><p>头骨大体块 → 中线/眉眼线 → 颧骨/鼻底/嘴线 → 耳朵连接点 → 光源与明暗交界线 → 风格压缩。</p></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="panel" id="natureLab">
+      <div class="sectionHead">
+        <div><p class="eyebrow">Nature / Fluid / Wind</p><h2>自然与流体：画看不见的力</h2><p>风、水、烟、云、树叶不是固定轮廓，而是运动、密度、重力和材料反应留下的证据。</p></div>
+        <button id="shotNatureBtn">📸 保存自然模拟</button>
+      </div>
+      <div class="labGrid">
+        <canvas id="natureCanvas" width="980" height="650"></canvas>
+        <aside class="controlStack">
+          <div class="segmented" id="natureModes"><button data-mode="wind" class="active">风</button><button data-mode="water">水</button><button data-mode="smoke">烟</button><button data-mode="tree">树</button><button data-mode="cloud">云</button></div>
+          <label>力量方向 <input id="forceAngle" type="range" min="0" max="360" value="20"></label>
+          <label>速度/强度 <input id="forcePower" type="range" min="0" max="1" step="0.01" value="0.55"></label>
+          <label>随机扰动 <input id="noisePower" type="range" min="0" max="1" step="0.01" value="0.32"></label>
+          <label>线条保留率 <input id="lineCompression" type="range" min="0.15" max="1" step="0.01" value="0.55"></label>
+          <div class="principleCard"><b>自然物口诀</b><p>不要画“风本身”，画它改变了什么：头发弧线、衣摆方向、树叶角度、水面波纹、烟雾拉伸。</p></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="panel" id="paletteLab">
+      <div class="sectionHead">
+        <div><p class="eyebrow">Palette / Color as Information</p><h2>调色画板：颜色是情绪、光照和空间的压缩包</h2><p>从固有色出发，生成亮部、暗部、互补色、环境反光和漫画化配色。</p></div>
+        <button id="savePaletteBtn">💾 保存配色</button>
+      </div>
+      <div class="labGrid">
+        <canvas id="paletteCanvas" width="980" height="650"></canvas>
+        <aside class="controlStack">
+          <label>固有色 <input id="baseColor" type="color" value="#78b7e6"></label>
+          <label>光照暖度 <input id="warmth" type="range" min="-1" max="1" step="0.01" value="0.35"></label>
+          <label>饱和度压缩 <input id="satCompress" type="range" min="0" max="1" step="0.01" value="0.28"></label>
+          <label>漫画对比 <input id="comicContrast" type="range" min="0" max="1" step="0.01" value="0.45"></label>
+          <div id="swatches" class="swatches"></div>
+          <div class="principleCard"><b>颜色转译</b><p>固有色告诉“这是什么”；光照色告诉“它在哪里”；环境色告诉“周围是什么”；饱和度和对比度告诉“这件事在情绪上有多重要”。</p></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="panel" id="emotionLab">
+      <div class="sectionHead">
+        <div><p class="eyebrow">Feeling → Drawing Language</p><h2>感受翻译器：把内心转成视觉语言</h2><p>感受不是空泛的，它可以被翻译成线条速度、比例变形、颜色温度、明暗对比、构图重心和空间距离。</p></div>
+        <button id="shotEmotionBtn">📸 保存风格卡</button>
+      </div>
+      <div class="labGrid">
+        <canvas id="emotionCanvas" width="980" height="650"></canvas>
+        <aside class="controlStack">
+          <div class="chipGrid emotionChips" id="emotionChips"></div>
+          <label>表达强度 <input id="emotionIntensity" type="range" min="0" max="1" step="0.01" value="0.55"></label>
+          <label>结构控制 <input id="structureControl" type="range" min="0" max="1" step="0.01" value="0.72"></label>
+          <label>抽象程度 <input id="abstractLevel" type="range" min="0" max="1" step="0.01" value="0.38"></label>
+          <div class="principleCard" id="emotionText"></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="panel" id="knowledge">
+      <div class="sectionHead">
+        <div><p class="eyebrow">Principles / Sources / Reading Path</p><h2>原理来源与学习路径</h2><p>每张卡片都把“绘画问题”连接到计算机视觉、计算机图形学、建模软件和传统绘画训练。</p></div>
+      </div>
+      <div class="knowledgeGrid" id="knowledgeGrid"></div>
+    </section>
   </main>
-</div>
 
-<div class="modal" id="modal">
-  <div class="modal-card">
-    <button class="modal-close" id="modal-close">×</button>
-    <h2 id="modal-title">标题</h2>
-    <div id="modal-body"></div>
-  </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
-<script src="./src/main.js"></script>
+  <div class="focusLens"></div>
+  <div id="toast" class="toast" hidden></div>
+  <script src="app.js" defer></script>
 </body>
 </html>
