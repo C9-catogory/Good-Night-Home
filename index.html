@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Good Night Home V8｜Dream Home RPG</title>
+<link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+<div id="shell">
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">🌙</span>
+      <div>
+        <h1>Good Night Home V8</h1>
+        <p>Dream Home RPG · 内心角落 / 物品地址 / 情绪整合</p>
+      </div>
+    </div>
+    <div class="actions">
+      <button id="btn-dream">梦境灯光</button>
+      <button id="btn-map">24章心路</button>
+      <button id="btn-card">晚安卡</button>
+      <button id="btn-reset">重置</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="side left" id="left-panel">
+      <button class="collapse" data-target="left-panel">☰</button>
+      <h2>今晚的心路</h2>
+      <div class="chapter-badge" id="chapter-badge">Chapter 1｜开灯</div>
+      <div id="quest-list"></div>
+      <div class="meter"><div id="quest-meter"></div></div>
+
+      <h2>心路不是工作表</h2>
+      <p class="soft-text">
+        它是一座可以做白日梦的家。你可以无所事事，也可以慢慢把东西、感受和内在声音放到能休息的位置。
+      </p>
+    </aside>
+
+    <section class="game-wrap">
+      <div id="game-container"></div>
+      <div class="bottom-dialogue">
+        <div class="portrait">🐱</div>
+        <div>
+          <b>小理</b>
+          <p id="dialogue">灯已经开了。今晚先不用变好，只要走进这座小家。</p>
+        </div>
+      </div>
+      <div class="mobile-controls">
+        <div class="pad">
+          <button data-key="up">▲</button>
+          <button data-key="left">◀</button>
+          <button data-key="down">▼</button>
+          <button data-key="right">▶</button>
+        </div>
+        <button class="interact" data-key="interact">互动 E</button>
+      </div>
+    </section>
+
+    <aside class="side right" id="right-panel">
+      <button class="collapse" data-target="right-panel">☰</button>
+      <h2>当前携带</h2>
+      <div class="inventory" id="inventory">空</div>
+
+      <h2>当前学习</h2>
+      <div class="skill-card" id="skill-card">
+        <b>空间锚点</b>
+        <span>先看见一个灯、一扇门、一个可以坐下来的角落。记忆从锚点开始。</span>
+      </div>
+
+      <h2>内在角落</h2>
+      <div class="inner-card" id="inner-card">
+        <b>尚未遇见</b>
+        <span>继续走动，靠近发光的角落。那里可能有一个小小的部分在等你。</span>
+      </div>
+    </aside>
+  </main>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-card">
+    <button class="modal-close" id="modal-close">×</button>
+    <h2 id="modal-title">标题</h2>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
+<script src="./src/main.js"></script>
+</body>
+</html>

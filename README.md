@@ -1,2 +1,60 @@
-# Good-Night-Home
-A healing platform that combines management methods for items with psychological knowledge
+# Good Night Home V8｜Dream Home RPG
+
+V8 是在 V7 的 Phaser 技术样机基础上，重新找回“梦里的家 / 内心角落 / 私密疗愈空间”的版本。
+
+## 这版改变了什么
+
+- 视觉从“任务地图”改成“梦境小家”
+- 场景变成发光岛屿、月光档案盒、毯子角、温柔暂停门
+- 加入 24 章心路地图
+- 加入“记忆碎片”而不只是普通物品
+- 加入“小小云”作为内在部分的初遇
+- 增加晚安回顾卡的疗愈叙事
+- 保留真正游戏交互：移动、拾取、安放、互动、保存
+
+## 操作
+
+- WASD / 方向键：移动
+- E / 空格：互动
+- 手机：下方虚拟方向键 + 互动 E
+
+## 本地预览
+
+```bash
+python -m http.server 8000
+```
+
+打开：
+
+```text
+http://localhost:8000
+```
+
+## 当前可玩内容
+
+1. 点亮小灯
+2. 拾取记忆碎片
+3. 放入月光档案盒
+4. 拾取钥匙
+5. 放入月光托盘
+6. 遇见“小小云”
+7. 进入温柔暂停门
+8. 生成晚安回顾卡
+
+## 后续扩展
+
+下一步可以把 24 章拆成 JSON-driven scenes：
+
+- chapter_01_lamp.json
+- chapter_02_entry.json
+- chapter_03_bedside.json
+- ...
+- chapter_24_starcove.json
+
+每章包含：
+- 地图
+- 可互动对象
+- NPC / 内在部分
+- 技能
+- 输入问题
+- 输出卡片
