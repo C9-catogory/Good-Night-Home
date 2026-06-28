@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Good Night Home V9｜Three.js 心理尺度梦境房间</title>
+  <title>Good Night Home V10｜递进式 3D 疗愈房间</title>
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
@@ -12,13 +12,14 @@
       <div class="brand">
         <span class="logo">🌙</span>
         <div>
-          <h1>Good Night Home V9</h1>
-          <p>Three.js · 真实房间心理尺度 · 温暖密室疗愈样机</p>
+          <h1>Good Night Home V10</h1>
+          <p>Three.js · 层层点灯 · 24章心路雏形 / 8章可玩样机</p>
         </div>
       </div>
       <div class="actions">
-        <button id="btn-scale">心理尺度</button>
-        <button id="btn-card">晚安卡</button>
+        <button id="btn-next">下一章</button>
+        <button id="btn-map">心路地图</button>
+        <button id="btn-card">晚安整合卡</button>
         <button id="btn-reset">重置</button>
       </div>
     </header>
@@ -26,19 +27,15 @@
     <main class="layout">
       <aside class="panel left" id="left-panel">
         <button class="collapse" data-target="left-panel">☰</button>
-        <h2>今晚目标</h2>
+        <h2>当前章节</h2>
+        <div class="chapter-card" id="chapter-card"></div>
+
+        <h2>今晚任务</h2>
         <div id="quest-list"></div>
         <div class="meter"><div id="quest-meter"></div></div>
 
-        <h2>房间尺度</h2>
-        <div class="scale-card">
-          <b>真实尺度</b>
-          <span>4.2m × 3.2m × 2.6m。视角高度约 1.35m，像坐在床边或站在安静房间里。</span>
-        </div>
-        <div class="scale-card">
-          <b>心理尺度</b>
-          <span>床头 = 伸手可及；玄关 = 出发边界；月光盒 = 模糊记忆容器；毯子角 = 内在小孩休息处。</span>
-        </div>
+        <h2>灯光层级</h2>
+        <div class="light-stack" id="light-stack"></div>
       </aside>
 
       <section class="stage-card">
@@ -47,27 +44,32 @@
           <div class="portrait">🐱</div>
           <div>
             <b>小理</b>
-            <p id="dialogue">欢迎回到梦里的房间。这里不是任务现场，是一个可以整理感受、随时发呆、慢慢睡着的地方。</p>
+            <p id="dialogue">欢迎回来。今晚的房间会一层一层亮起来，不急着通关。</p>
           </div>
         </div>
       </section>
 
       <aside class="panel right" id="right-panel">
         <button class="collapse" data-target="right-panel">☰</button>
+
         <h2>当前携带</h2>
         <div class="inventory" id="inventory">空</div>
 
-        <h2>当前互动</h2>
-        <div class="skill-card" id="skill-card">
-          <b>空间锚点</b>
-          <span>先看见一盏灯、一个床头、一个盒子。真实尺度让身体知道：这里可以停下来。</span>
+        <h2>疗愈知识卡</h2>
+        <div class="skill-card" id="skill-card"></div>
+
+        <h2>今晚输入</h2>
+        <textarea id="journal-input" placeholder="这里可以写一句：我现在看见了什么？我想把什么放下？"></textarea>
+        <div class="small-actions">
+          <button id="btn-save-note">保存一句话</button>
+          <button id="btn-journal">查看记录</button>
         </div>
 
         <h2>操作</h2>
         <div class="help">
-          <p>拖动 / 鼠标移动：轻微环绕视角</p>
+          <p>拖动：轻微环绕视角</p>
           <p>滚轮：慢慢靠近或远离</p>
-          <p>点击发光物：拾取、放置、打开或对话</p>
+          <p>点击发光物：互动 / 拾取 / 放置</p>
           <p>Tab：切换下一个热点</p>
         </div>
       </aside>
@@ -92,6 +94,6 @@
     }
   }
   </script>
-  <script type="module" src="./src/main.js"></script>
+  <script type="module" src="./src/main.js?v=10"></script>
 </body>
 </html>
