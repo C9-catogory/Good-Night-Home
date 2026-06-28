@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
-const SAVE_KEY = "good-night-home-v10-progressive-room";
+const SAVE_KEY = "good-night-home-v11-stable-healing-storage";
 
 const CHAPTERS = [
   {id:1,key:"lamp",title:"点灯房",theme:"我在这里",skill:"空间锚点",goal:"点亮床头灯，拾起第一枚记忆星尘。",knowledge:"当世界太大时，先找一个锚点：一盏灯、一个床边、一次呼吸。"},
@@ -19,7 +19,7 @@ const QUESTS = [
   {id:"memory", text:"记忆星尘进入月光盒"},
   {id:"key", text:"钥匙进入月光托盘"},
   {id:"bedside", text:"水杯和耳塞进入床头恢复区"},
-  {id:"desk", text:"待办本进入书桌收件箱"},
+  {id:"desk", text:"待办本进入收件箱，并写下一个未完成"},
   {id:"emotion", text:"情绪云被命名并安放"},
   {id:"parts", text:"小小云被看见"},
   {id:"boundary", text:"写下一句边界句"},
@@ -27,11 +27,11 @@ const QUESTS = [
 ];
 
 const ITEMS = {
-  memory:{name:"记忆星尘", icon:"✦", home:"moonBox", chapter:1, why:"模糊记忆先进入容器，之后再慢慢解释。"},
-  key:{name:"钥匙", icon:"🔑", home:"tray", chapter:2, why:"钥匙住在托盘，明天不用靠焦虑记住它。"},
-  water:{name:"水杯", icon:"💧", home:"bedShelf", chapter:3, why:"水放在伸手可及处，身体不必半夜搜索。"},
-  earplug:{name:"耳塞", icon:"🫧", home:"bedShelf", chapter:3, why:"声音守护工具放在床头，低能量时也能找到。"},
-  notebook:{name:"待办本", icon:"📒", home:"inbox", chapter:4, why:"未完成先停进外部容器，脑子不用整夜保管。"}
+  memory:{name:"记忆星尘", icon:"✦", home:"moonBox", chapter:1, why:"模糊记忆先进入容器，之后再慢慢解释。", principle:"先稳定，再理解", trauma:"创伤整合不是立刻回忆全部细节，而是让身体先获得一个‘现在安全’的落点。", prompt:"我现在可以先把哪一件模糊的事放进容器？"},
+  key:{name:"钥匙", icon:"🔑", home:"tray", chapter:2, why:"钥匙住在托盘，明天不用靠焦虑记住它。", principle:"物品地址法", trauma:"反复丢东西会让身体进入警报。固定地址是在训练‘我可以重新找到’。", prompt:"什么东西最容易让我早上慌张？它的固定家在哪里？"},
+  water:{name:"水杯", icon:"💧", home:"bedShelf", chapter:3, why:"水放在伸手可及处，身体不必半夜搜索。", principle:"身体优先", trauma:"恢复不是讲道理。口渴、冷、吵、黑暗这些小刺激被照顾后，神经系统才有余地学习。", prompt:"今晚身体最需要哪一种小照顾？"},
+  earplug:{name:"耳塞", icon:"🫧", home:"bedShelf", chapter:3, why:"声音守护工具放在床头，低能量时也能找到。", principle:"感官降载", trauma:"保护感官不是脆弱，而是在给神经系统减少不必要的警报。", prompt:"我可以减少哪一种声音/光线/触感负担？"},
+  notebook:{name:"待办本", icon:"📒", home:"inbox", chapter:4, why:"未完成先停进外部容器，脑子不用整夜保管。", principle:"工作记忆外化", trauma:"未完成会像警报一样反复弹出。写进收件箱，是告诉大脑：我没有忘，只是今晚不处理。", prompt:"哪一件未完成可以先被放下？"}
 };
 
 const CONTAINER_ACCEPT = {
@@ -59,6 +59,8 @@ function freshSave(){
     placed:{},
     lampLevel:0,
     notes:[],
+    unfinishedText:"",
+    value:"",
     boundaryText:"",
     valueAction:"",
     emotion:null,
@@ -273,9 +275,9 @@ function updateVisibility(){
 function buildInteractives(){
   makeHotspot("lamp", "床头灯｜点亮第一盏灯", [-.15,.82,-1.05], .12, 0xffd88c, ()=>{
     markDone("lamp");
-    setDialogue("灯亮了。第一章不是整理，而是让身体知道：我在这里。");
-    setSkill("空间锚点", "当世界太大时，先找一个锚点：一盏灯、一个床边、一次呼吸。");
-    advanceIfReady(2);
+    setDialogue("灯亮了。第一章不是立刻通关，而是先看见房间，再把记忆星尘放进月光盒。");
+    setSkill("空间锚点", "先点灯，再整理。创伤整合不是硬挖过去，而是让身体体验：现在有光、有边界、有容器。");
+    completeChapterOneIfReady();
   }, 1);
 
   makeHotspot("drawer", "床头抽屉｜打开容器", [-.08,.50,-.78], .12, 0xffefbf, ()=>{
@@ -304,7 +306,7 @@ function buildInteractives(){
     state.cloudMet = true;
     markDone("parts");
     setDialogue("你遇见了小小云。它不是麻烦，它只是很早就学会躲起来。");
-    setSkill("部分安放", "脆弱的部分不需要被赶走。它可以先坐在毯子里，被看见，而不用解释全部过去。");
+    setSkill("部分安放", "脆弱的部分不需要被赶走。它可以先坐在毯子里，被看见，而不用解释全部过去。整合不是审判自己，而是让不同部分都拥有一个安全位置。" );
     openModal("🌧 小小云", `
       <p>小小云把毯子拉到鼻尖。它说：</p>
       <p><b>“我不是不想长大。我只是很久没有一个可以慢慢醒来的地方。”</b></p>
@@ -325,7 +327,7 @@ function buildInteractives(){
 function makeHotspot(id,name,pos,radius,color,action,chapter=1){
   const sphere = roundedGlow(pos,color,radius);
   sphere.name = name;
-  sphere.userData = {id,name,action,hotspot:true,chapter};
+  Object.assign(sphere.userData, {id,name,action,hotspot:true,chapter});
   hotspots.push(sphere);
   addLabel(name, [pos[0],pos[1]+radius+.15,pos[2]], "hotspot", chapter);
   registerUnlock(sphere, chapter);
@@ -335,7 +337,7 @@ function makeHotspot(id,name,pos,radius,color,action,chapter=1){
 function makeContainer(id,name,pos,radius,color,chapter=1){
   const mesh = roundedGlow(pos,color,radius);
   mesh.name = name;
-  mesh.userData = {id,name,container:true,hotspot:true,chapter,action:()=>tryContainer(id)};
+  Object.assign(mesh.userData, {id,name,container:true,hotspot:true,chapter,action:()=>tryContainer(id)});
   hotspots.push(mesh);
   containers[id] = mesh;
   addLabel(name, [pos[0],pos[1]+radius+.15,pos[2]], "hotspot", chapter);
@@ -365,6 +367,7 @@ function makePickable(id,name,pos,color){
 function registerUnlock(obj, chapter){
   unlockGroups[chapter] = unlockGroups[chapter] || [];
   unlockGroups[chapter].push(obj);
+  if(obj?.userData?.linkedLight) unlockGroups[chapter].push(obj.userData.linkedLight);
 }
 
 function roundedGlow(pos,color=0xffe7a2,size=.08){
@@ -413,15 +416,20 @@ function pickItem(id){
   }
   held = id;
   pickables[id].visible = false;
-  setDialogue("你拿起了 " + item.name + "。小理：先想它的功能，再找容器。");
+  setDialogue("你拿起了 " + item.name + "。小理：先想它保护什么，再找它的家。" );
+  setSkill(item.principle || "物品有家", `${item.why}<br><br><b>创伤整合提示</b>：${item.trauma || "先让身体获得一点可控感。"}<br><b>小问题</b>：${item.prompt || "它应该住在哪里？"}`);
   updateUI();
 }
 
 function tryContainer(id){
   if(!held){
+    if(id === "inbox" && state.placed.notebook === "inbox" && !state.done.desk){
+      openDeskInbox();
+      return;
+    }
     const name = containers[id]?.name || id;
-    setDialogue(name + " 正在发光。它可以替你承载一部分细节。");
-    setSkill("容器化", "容器不是逃避，而是给信息一个暂时的位置。");
+    setDialogue(name + " 正在发光。它可以替你承载一部分细节。先拿起一个适合它的物品。" );
+    setSkill("容器化", "容器不是逃避，而是给信息一个暂时的位置。稳定的容器会减少‘我必须一直记着’的警报。" );
     return;
   }
   const accepts = CONTAINER_ACCEPT[id] || [];
@@ -430,16 +438,17 @@ function tryContainer(id){
     state.placed[held] = id;
     makePlacedIcon(item.icon, containers[id].position);
     setDialogue(item.icon + " " + item.name + " 被安放了。小理：" + item.why);
-    setSkill(item.name + " 的安放", item.why);
+    setSkill(item.name + " 的安放", `${item.why}<br><br><b>这一步在练习</b>：${item.principle || "把压力放进外部系统"}<br><b>整合提示</b>：${item.trauma || "身体通过重复的小安全经验，慢慢相信世界不是全靠硬撑。"}`);
     const justHeld = held;
     held = null;
-    if(justHeld === "memory") markDone("memory"), advanceIfReady(2);
+    if(justHeld === "memory"){ markDone("memory"); completeChapterOneIfReady(); }
     if(justHeld === "key") markDone("key"), advanceIfReady(3);
     if(state.placed.water === "bedShelf" && state.placed.earplug === "bedShelf"){ markDone("bedside"); advanceIfReady(4); }
-    if(justHeld === "notebook"){ markDone("desk"); advanceIfReady(5); }
+    if(justHeld === "notebook"){ openDeskInbox(); }
     save();
   }else{
-    setDialogue("这个容器不太合适。试试问：它明天在哪里最需要被找到？");
+    setDialogue("这个容器不太合适，但这不是失败。试试问：它明天在哪里最需要被找到？" );
+    setSkill("错误也是整理线索", "放错位置时，不要责备自己。把问题从‘我怎么又错了’换成‘这个物品的功能是什么，它在哪里最容易被重新找到？’");
     pulse(containers[id]);
   }
   updateUI();
@@ -463,11 +472,70 @@ function pulse(obj){
   const timer=setInterval(()=>{ t+=.15; const s=1+Math.sin(t*8)*.06; obj.scale.set(start.x*s,start.y*s,start.z*s); if(t>1){clearInterval(timer);obj.scale.copy(start);}},16);
 }
 
+function completeChapterOneIfReady(){
+  if(state.done.lamp && state.done.memory){
+    advanceIfReady(2);
+  }else if(state.done.lamp && !state.done.memory){
+    setDialogue("第一盏灯已经亮了。现在请把 ✦ 记忆星尘放进月光盒：先有容器，再慢慢理解。" );
+  }
+}
+
+function isCurrentChapterComplete(){
+  switch(state.chapter){
+    case 1: return !!(state.done.lamp && state.done.memory);
+    case 2: return !!state.done.key;
+    case 3: return !!state.done.bedside;
+    case 4: return !!state.done.desk;
+    case 5: return !!state.done.emotion;
+    case 6: return !!state.done.parts;
+    case 7: return !!state.done.boundary;
+    case 8: return !!state.done.stargate;
+    default: return false;
+  }
+}
+
+function currentHint(){
+  const hints = {
+    1:"先点击床头灯，再拾起 ✦ 记忆星尘，点击月光盒安放。",
+    2:"拾起 🔑 钥匙，点击玄关的月光托盘。",
+    3:"拾起 💧 水杯和 🫧 耳塞，都放进床头恢复区。",
+    4:"拾起 📒 待办本，放进书桌收件箱，然后写一句‘今晚先不处理’。",
+    5:"点击情绪云，完成：命名 → 下面的担心 → 需要什么。",
+    6:"点击毯子角的小小云，给脆弱部分一个被看见的位置。",
+    7:"点击边界门，写一句可以保护明天的边界句。",
+    8:"点击星湾，选择一个价值方向和明天小行动。"
+  };
+  return hints[state.chapter] || "慢慢来，只需要下一小步。";
+}
+
+function openDeskInbox(){
+  openModal("📒 书桌归档台｜把未完成放下", `
+    <p>你已经把待办本放进收件箱。现在写一句很短的话，告诉大脑：<b>我没有忘记，只是今晚不处理。</b></p>
+    <textarea id="unfinished-input" style="width:100%;min-height:92px;border:1px solid rgba(118,88,128,.22);border-radius:16px;padding:10px" placeholder="例如：论文图表明天只检查 Fig.8 的页边距。">${state.unfinishedText||""}</textarea>
+    <p><button id="save-unfinished">放入收件箱，今晚停止反刍</button></p>
+  `);
+  setTimeout(()=>{
+    const btn = document.getElementById("save-unfinished");
+    if(!btn) return;
+    btn.onclick=()=>{
+      const text = document.getElementById("unfinished-input").value.trim() || "这件事已经进入收件箱，今晚不继续处理。";
+      state.unfinishedText = text;
+      state.notes = state.notes || [];
+      if(!state.notes.includes("未完成：" + text)) state.notes.push("未完成：" + text);
+      markDone("desk");
+      closeModal();
+      setDialogue("待办本进入收件箱。小理：你没有忘记它，只是把它交给明天的系统。" );
+      setSkill("工作记忆外化", "反刍常常是大脑害怕遗漏。把未完成写进固定容器，是在训练‘我可以暂停，而不是失控’。" );
+      advanceIfReady(5);
+    };
+  },0);
+}
+
 function advanceIfReady(next){
   if(state.chapter < next){
     state.chapter = next;
     const ch = currentChapter();
-    setDialogue(`下一盏灯亮了：${ch.title}。${ch.knowledge}`);
+    setDialogue(`下一盏灯亮了：${ch.title}。${ch.knowledge} 现在只需要下一小步。`);
     save();
     updateLighting();
     updateVisibility();
@@ -479,7 +547,7 @@ function openEmotion(){
   const under=["害怕找不到东西","害怕失控","需求没被看见","太累了还要撑","信息太多","需要安全"];
   const needs=["固定位置","一个容器","少一点选择","边界","休息","明天小行动"];
   openModal("☁️ 情绪云房", `
-    <p>情绪不是命令，而是信息。先命名，再扩展，再转成支持。</p>
+    <p>情绪不是命令，而是信息。先命名，再扩展，再转成支持。这里不需要挖出全部创伤细节，只练习把警报翻译成需要。</p>
     <div class="choice-grid">
       ${emotions.map(e=>`<button data-emotion="${e}"><b>${e}</b><br><span>第一层命名</span></button>`).join("")}
     </div>
@@ -500,7 +568,7 @@ function openEmotion(){
       markDone("emotion");
       closeModal();
       setDialogue(`情绪云被安放了：${state.emotion} → ${state.emotionUnder||"还在形成"} → 需要${state.emotionNeed||"一个容器"}。`);
-      setSkill("情绪命名与扩展", "命名不是把情绪消灭，而是让它从整片雾变成可以被承载的一朵云。");
+      setSkill("情绪命名与扩展", "命名不是把情绪消灭，而是让它从整片雾变成可以被承载的一朵云。整合从‘我被情绪吞没’变成‘我正在看见一个需要’。" );
       advanceIfReady(6);
     };
   },0);
@@ -518,7 +586,7 @@ function openBoundary(){
       markDone("boundary");
       closeModal();
       setDialogue("边界门出现了。小理：边界不是把爱关掉，而是让关系有门框。");
-      setSkill("温柔边界", "边界让“靠近”和“离开”都有清楚的位置。");
+      setSkill("温柔边界", "边界让“靠近”和“离开”都有清楚的位置。创伤后的身体常常把所有请求都当成警报，边界句能帮它判断：什么现在可以进来，什么可以晚一点。" );
       advanceIfReady(8);
     };
   },0);
@@ -542,8 +610,8 @@ function openValueAction(){
       state.valueAction = document.getElementById("action-input").value.trim() || "明天只检查月光托盘一次。";
       markDone("stargate");
       closeModal();
-      setDialogue("星湾亮起了。你不需要成为没有裂缝的人，也可以带着小家继续出发。");
-      setSkill("价值小行动", "不是等恐惧消失才行动，而是在恐惧还在时，朝重要方向走一小步。");
+      setDialogue("星湾亮起了。你不需要成为没有裂缝的人，也可以带着小家继续出发。" );
+      setSkill("价值小行动", "不是等恐惧消失才行动，而是在恐惧还在时，朝重要方向走一小步。今晚的通关不是‘变好’，而是完成一次可控的小整合。" );
       openCard();
     };
   },0);
@@ -555,7 +623,7 @@ function setSkill(title,text){
 
 function updateUI(){
   const ch = currentChapter();
-  document.getElementById("chapter-card").innerHTML = `<b>${ch.id}. ${ch.title}｜${ch.theme}</b><span><b>${ch.skill}</b>：${ch.goal}</span><span>${ch.knowledge}</span>`;
+  document.getElementById("chapter-card").innerHTML = `<b>${ch.id}. ${ch.title}｜${ch.theme}</b><span><b>${ch.skill}</b>：${ch.goal}</span><span>${ch.knowledge}</span><span><b>下一步</b>：${currentHint()}</span>`;
   const root=document.getElementById("quest-list"); root.innerHTML="";
   QUESTS.forEach((q,i)=>{
     const div=document.createElement("div");
@@ -574,14 +642,20 @@ function updateUI(){
 }
 
 function openCard(){
-  markDone("stargate");
+  if(!state.done.stargate){
+    openModal("🌙 晚安整合卡还没有完成", `
+      <p>这张卡会在星湾小行动完成后生成。现在不是失败，只是还没有走到最后一盏灯。</p>
+      <p><b>当前提示：</b>${currentHint()}</p>
+    `);
+    return;
+  }
   openModal("🌙 晚安整合卡", `<pre>${makeCard()}</pre>`);
 }
 
 function makeCard(){
   const placed = Object.entries(state.placed).map(([id,home])=>`${ITEMS[id]?.icon||""} ${ITEMS[id]?.name||id} → ${home}`).join("\n") || "还没有物品被安放";
   const notes = (state.notes||[]).map(n=>`- ${n}`).join("\n") || "今晚没有输入文字，也没关系。";
-  return `Good Night Home V10｜层层点灯晚安卡
+  return `Good Night Home V11｜稳定通关晚安卡
 
 当前章节：
 ${currentChapter().title}｜${currentChapter().theme}
@@ -639,10 +713,15 @@ function cycleHotspot(){
 function bindUI(){
   document.querySelectorAll(".collapse").forEach(btn=>btn.addEventListener("click",()=>document.getElementById(btn.dataset.target).classList.toggle("collapsed")));
   document.getElementById("btn-next").onclick=()=>{
-    if(state.chapter<CHAPTERS.length){
-      state.chapter++;
-      updateVisibility(); updateLighting(); updateUI();
-      setDialogue(`下一章：${currentChapter().title}。${currentChapter().knowledge}`);
+    if(isCurrentChapterComplete()){
+      if(state.chapter < CHAPTERS.length){
+        advanceIfReady(state.chapter + 1);
+      }else{
+        openCard();
+      }
+    }else{
+      openModal("今晚提示", `<p>${currentHint()}</p><p>这个版本不再允许直接跳关，因为通关要和收纳动作、身体稳定、心理知识学习绑在一起。</p>`);
+      setDialogue("不用急着下一章。" + currentHint());
     }
   };
   document.getElementById("btn-map").onclick=()=>openModal("心路地图", `<div class="chapter-grid">${CHAPTERS.map(c=>`<div class="chapter-node ${c.id<state.chapter?'done':''} ${c.id===state.chapter?'current':''}"><b>${c.id}. ${c.title}</b><span>${c.theme}</span><span>${c.skill}</span></div>`).join("")}</div>`);
